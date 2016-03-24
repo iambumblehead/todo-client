@@ -1,5 +1,5 @@
 // Filename: todo.js  
-// Timestamp: 2016.03.24-01:07:28 (last modified)
+// Timestamp: 2016.03.24-01:45:47 (last modified)
 // Author(s): bumblehead <chris@bumblehead.com>  
 
 import rx from 'rx';
@@ -106,25 +106,21 @@ var todo = module.exports = (o => {
 
     // endpoint is at /save
     const savedata$ = actions.listsave$
-            .flatMap(() => {
-              console.log('fatmap called');
-              return state$;
-            })
-            .subscribe(res => console.log('res is ', res));
-            //.map(state => state.list.map(todo => todo.value))
-            //.map(valarr => valarr.join(','));
+            .withLatestFrom(state$)
+            .map(([e, state]) => state.list.map(todo => todo.value))  
+            .map(valarr => valarr.join(','));
 
-    //const savedatares$ = savedata$
-    //        .map(res => path_SAVE + '?' + formurlencoded({data : res || '+' }))
-    //        .flatMap(requestUrl => rx.Observable.fromPromise(
-    //          superagentp(superagent, Promise)
-    //            .put(requestUrl)))
-    //        .map(xhr => xhr.status);
+    const savedatares$ = savedata$
+            .map(res => path_SAVE + '?' + formurlencoded({data : res || '+' }))
+            .flatMap(requestUrl => rx.Observable.fromPromise(
+              superagentp(superagent, Promise)
+                .put(requestUrl)))
+            .map(xhr => xhr.status);
     
-    //savedatares$.subscribe(
-    //  res => console.log('res is ', res),
-    //  err => console.log('err is ', err)
-    //);
+    savedatares$.subscribe(
+      res => console.log('res is ', res),
+      err => console.log('err is ', err)
+    );
 
     return state$;    
   };

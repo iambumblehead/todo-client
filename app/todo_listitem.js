@@ -1,5 +1,5 @@
 // Filename: todo_listitem.js  
-// Timestamp: 2016.03.23-02:27:09 (last modified)
+// Timestamp: 2016.03.24-01:46:39 (last modified)
 // Author(s): bumblehead <chris@bumblehead.com>  
 
 import {label,input,div,span,a} from '@cycle/dom';
@@ -32,6 +32,10 @@ var todo_listitem = module.exports = (o => {
       ))
     ])
   );
+
+  o.intent = () => {
+
+  };
 
   return o;
   
