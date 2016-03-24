@@ -1,5 +1,5 @@
 // Filename: todo.js  
-// Timestamp: 2016.03.24-01:45:47 (last modified)
+// Timestamp: 2016.03.24-02:04:58 (last modified)
 // Author(s): bumblehead <chris@bumblehead.com>  
 
 import rx from 'rx';
@@ -18,18 +18,7 @@ var todo = module.exports = (o => {
 
   const path_SAVE = '/save';
 
-  const todoLabelText = elem => (
-    elem.dataset.todomode === 'EDIT'
-      ? elem.getElementsByClassName('todo_save')[0].value
-      : elem.getElementsByClassName('todo_label')[0].innerText    
-  );
-
-  const todoUID = elem => (
-    elem.dataset.uid
-  );
-
   const intent = (sources) => {
-    
     const submit$ = sources.DOM.select('.todoform')
             .events('submit')
             .map(e => (e.preventDefault(), e));
@@ -45,46 +34,20 @@ var todo = module.exports = (o => {
               value : value
             }));
 
-    const todoedit$ = click$
-            .filter(e => /todoedit/g.test(e.target.className))
-            .map(e => (e.preventDefault(), e.target.parentNode))
-            .map(parent => ({
-              uid   : todoUID(parent)
-            }));
-
-    const todorm$ = click$
-            .filter(e => /todorm/g.test(e.target.className))
-            .map(e => (e.preventDefault(), e.target.parentNode))
-            .map(parent => ({
-              uid   : todoUID(parent)
-            }));
-
-    const todosave$ = click$
-            .filter(e => /todosave/g.test(e.target.className))
-            .map(e => (e.preventDefault(), e.target.parentNode))
-            .map(parent => ({
-              uid   : todoUID(parent),
-              value : todoLabelText(parent)
-            }));
-
-    const closeerr$ = sources.DOM.select('.closeerr')
-            .events('click')
-            .map(e => (e.preventDefault(), e.target))
-            .map(elem => ({
-              uid   : todoUID(elem)
-            }));
-
     const listsave$ = sources.DOM.select('.listsave')
             .events('click')
             .map(e => (e.preventDefault(), e));
+
+    const todo_listitem_intent = todo_listitem.intent(sources.DOM);
+    const todo_listerr_intent = todo_listerr.intent(sources.DOM);    
     
     return {
+      todorm$   : todo_listitem_intent.todorm$,      
+      todoedit$ : todo_listitem_intent.todoedit$,
+      todosave$ : todo_listitem_intent.todosave$,
+      closeerr$ : todo_listerr_intent.closeerr$,
       todoadd$,      
-      todoedit$,
-      todorm$,
-      todosave$,
-      listsave$,
-      closeerr$
+      listsave$
     };
   };
 
