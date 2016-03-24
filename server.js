@@ -1,6 +1,6 @@
 /* eslint no-console: 0 */
 // Filename: server.js  
-// Timestamp: 2016.03.24-00:45:29 (last modified)
+// Timestamp: 2016.03.24-02:30:47 (last modified)
 // Author(s):
 //
 // generated from
@@ -9,6 +9,7 @@
 const path = require('path');
 const express = require('express');
 const webpack = require('webpack');
+const favicon = require('serve-favicon');
 const webpackMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const config = require('./webpack.config.js');
@@ -33,6 +34,9 @@ if (isDeveloping) {
     }
   });
 
+  app.use(favicon(__dirname + '/app/favicon-16x16.png', { 
+    maxAge : 2592000000 
+  }));
   app.use(middleware);
   app.use(webpackHotMiddleware(compiler));
 

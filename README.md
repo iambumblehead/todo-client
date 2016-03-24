@@ -1,8 +1,7 @@
 todo-client
 ===========
 
-todo-client
-
+![todo](https://github.com/iambumblehead/todo-client/raw/master/app/screen-2016.03.24.png)
 
 --------------------------------------------------------------------------
 ## install

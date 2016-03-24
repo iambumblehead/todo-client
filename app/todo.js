@@ -1,5 +1,5 @@
 // Filename: todo.js  
-// Timestamp: 2016.03.24-02:04:58 (last modified)
+// Timestamp: 2016.03.24-02:13:38 (last modified)
 // Author(s): bumblehead <chris@bumblehead.com>  
 
 import rx from 'rx';
@@ -21,25 +21,21 @@ var todo = module.exports = (o => {
   const intent = (sources) => {
     const submit$ = sources.DOM.select('.todoform')
             .events('submit')
-            .map(e => (e.preventDefault(), e));
+            .map(e => (e.preventDefault(), e)),
 
-    const click$ = sources.DOM.select('.todolist')
-            .events('click')
-            .map(e => e);
-
-    const todoadd$ = submit$
+          todoadd$ = submit$
             .map(e => e.target.elements.todoadd.value)
             .filter(e => e)
             .map(value => ({
               value : value
-            }));
+            })),
 
-    const listsave$ = sources.DOM.select('.listsave')
+          listsave$ = sources.DOM.select('.listsave')
             .events('click')
-            .map(e => (e.preventDefault(), e));
+            .map(e => (e.preventDefault(), e)),
 
-    const todo_listitem_intent = todo_listitem.intent(sources.DOM);
-    const todo_listerr_intent = todo_listerr.intent(sources.DOM);    
+          todo_listitem_intent = todo_listitem.intent(sources.DOM),
+          todo_listerr_intent = todo_listerr.intent(sources.DOM);    
     
     return {
       todorm$   : todo_listitem_intent.todorm$,      
@@ -74,15 +70,16 @@ var todo = module.exports = (o => {
             .map(valarr => valarr.join(','));
 
     const savedatares$ = savedata$
-            .map(res => path_SAVE + '?' + formurlencoded({data : res || '+' }))
+            .map(res => path_SAVE + '?' +
+                 (res ? formurlencoded({data : res}) : 'data'))
             .flatMap(requestUrl => rx.Observable.fromPromise(
               superagentp(superagent, Promise)
                 .put(requestUrl)))
             .map(xhr => xhr.status);
     
     savedatares$.subscribe(
-      res => console.log('res is ', res),
-      err => console.log('err is ', err)
+      res => console.log('list is saved ', res),
+      err => console.log('list is err ', err)
     );
 
     return state$;    
